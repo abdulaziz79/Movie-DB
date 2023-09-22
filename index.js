@@ -15,8 +15,8 @@ app.get("/time", (req, res) =>{
 
     let currentDate=new Date()
     let hours= currentDate.getHours()
-    let minutes=currentDate.getMinutes()
+    let second=currentDate.getSeconds()
 
-    res.status(200).send(hours+":"+minutes)
+    res.status(200).send(hours+":"+second)
 })
 app.listen(3000)
