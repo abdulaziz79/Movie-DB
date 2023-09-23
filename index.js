@@ -83,6 +83,20 @@ app.get("/movies/read/by-title", (req, res) =>{
     
 })
 
+app.get("/movies/read/id/:ID", (req, res) =>{
+     
+    const ID=req.params.ID
+    const movie=movies[ID -1]
+
+    if(ID<=movies.length && ID >0){
+        res.json({status:200, data:movie })
+
+    }else
+    res.json({status:404, error:true,message :"the movie " +ID +" doesn't exist" })
+    
+})
+
+
 
 
 
