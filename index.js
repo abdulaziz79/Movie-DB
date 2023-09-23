@@ -88,6 +88,33 @@ app.get("/movies/delete/:id", (req, res) =>{
 
 
 
+app.get("/movies/update/:id", (req, res) =>{
+
+    let updateId=req.params.id
+    let newTitle=req.query.title
+    let newRate=parseFloat(req.query.rating)
+    let newYear=req.query.year
+    
+    if(updateId  > movies.length || updateId<1){
+        res.json({status:404, error:true, message:`the movie ${updateId} does not exist`
+    })
+    }else{
+        if(newTitle){
+            movies[updateId-1].title= newTitle
+        }if(newRate){
+            movies[updateId -1].rating=newRate
+        }if(newYear){
+            movies[updateId-1].year=newYear
+        }
+        
+    }
+   
+    res.json({movies})
+    
+})
+
+
+
 
 app.get("/movies/read/", (req, res) =>{
      
