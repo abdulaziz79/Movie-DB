@@ -55,24 +55,32 @@ app.get("/search", (req, res) =>{
 app.get("/movies/add", (req, res) =>{
     let newTitle=req.query.title
     let newYear=req.query.year
-    let newRating=req.query.rating
+    let newRating=parseFloat(req.query.rating) || 4
 
     if(newTitle==undefined || newYear==undefined){
         res.json({status:403, error:true, message:"you cannot create a movie without providing a title and a year"})
-    }else if(newYear.length !== 4 && isNaN(newYear)){
+    }else if(newYear.length !== 4 || isNaN(newYear)){
         res.json({status:403, error:true, message:'you cannot create a movie without providing a title and a year'})
-    }else if(newRating==undefined){
+    }else if(newRating>10 ||newRating<0){
         newRating=4
     }
-    else{
-        const newMovie={title:newTitle,year:newYear, rating:newRating }
+    
+        const newMovie={title:newTitle,year:parseInt(newYear, 10), rating:newRating }
         movies.push(newMovie)
         res.json(movies)
 
-        
-    }
+ 
 
 })
+
+app.get("/movies/delete", (req, res) =>{
+
+    // let newId=req.query.
+    
+})
+
+
+
 
 app.get("/movies/read/", (req, res) =>{
      
@@ -122,9 +130,6 @@ app.get("/movies/update", (req, res) =>{
     
 })
 
-app.get("/movies/delete", (req, res) =>{
-    
-})
 
 
 
