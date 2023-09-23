@@ -56,12 +56,35 @@ app.get("/movies/create", (req, res) =>{
 
 })
 
-app.get("/movies/read", (req, res) =>{
-
+app.get("/movies/read/", (req, res) =>{
+     
     res.json({status:200, data:movies})
-
     
 })
+
+app.get("/movies/read/by-date", (req, res) =>{
+     
+    const sortedYear =movies.sort((a, b)=>a.year - b.year)
+    res.json({status:200, data:sortedYear})
+    
+})
+
+app.get("/movies/read/by-rating", (req, res) =>{
+     
+    const sortedRate =movies.sort((a, b)=>b.rating - a.rating)
+    res.json({status:200, data:sortedRate})
+    
+})
+
+app.get("/movies/read/by-title", (req, res) =>{
+     
+    const sortedTitle =movies.sort((a, b) => a.title.localeCompare(b.title));
+    res.json({status:200, data:sortedTitle})
+    
+})
+
+
+
 
 app.get("/movies/update", (req, res) =>{
     
