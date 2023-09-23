@@ -52,7 +52,25 @@ app.get("/search", (req, res) =>{
     }
 });
 
-app.get("/movies/create", (req, res) =>{
+app.get("/movies/add", (req, res) =>{
+    let newTitle=req.query.title
+    let newYear=req.query.year
+    let newRating=req.query.rating
+
+    if(newTitle==undefined || newYear==undefined){
+        res.json({status:403, error:true, message:"you cannot create a movie without providing a title and a year"})
+    }else if(newYear.length !== 4 && isNaN(newYear)){
+        res.json({status:403, error:true, message:'you cannot create a movie without providing a title and a year'})
+    }else if(newRating==undefined){
+        newRating=4
+    }
+    else{
+        const newMovie={title:newTitle,year:newYear, rating:newRating }
+        movies.push(newMovie)
+        res.json(movies)
+
+        
+    }
 
 })
 
