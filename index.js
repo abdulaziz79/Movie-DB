@@ -73,9 +73,16 @@ app.get("/movies/add", (req, res) =>{
 
 })
 
-app.get("/movies/delete", (req, res) =>{
+app.get("/movies/delete/:id", (req, res) =>{
 
-    // let newId=req.query.
+    let newId=req.params.id
+    
+    if(newId  > movies.length || newId<1){
+        res.json({status:404, error:true, message:`the movie ${newId} does not exist`
+    })
+    }
+    movies.splice(newId-1   , 1)
+    res.json({movies})
     
 })
 
