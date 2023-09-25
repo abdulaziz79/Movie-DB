@@ -1,11 +1,16 @@
 const express = require('express');
 const app =express()
+ const bodyParser =require("body-parser");
+ app.use(bodyParser.json());
+ app.use(bodyParser.urlencoded({extended:true}));
 
 const movies = [
     { title: 'Jaws', year: 1975, rating: 8 },
     { title: 'Avatar', year: 2009, rating: 7.8 },
     { title: 'Brazil', year: 1985, rating: 8 },
     { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }]
+
+    app.use(express.json())
 
 app.get("/", (req, res) =>{
     console.log("here")
@@ -52,10 +57,10 @@ app.get("/search", (req, res) =>{
     }
 });
 
-app.get("/movies/add", (req, res) =>{
-    let newTitle=req.query.title
-    let newYear=req.query.year
-    let newRating=parseFloat(req.query.rating) || 4
+app.post("/movies/add", (req, res) =>{
+    let newTitle=req.body.title
+    let newYear=req.body.year
+    let newRating=parseFloat(req.body.rating) || 4
 
     if(newTitle==undefined || newYear==undefined){
         res.json({status:403, error:true, message:"you cannot create a movie without providing a title and a year"})
@@ -72,7 +77,7 @@ app.get("/movies/add", (req, res) =>{
  
 
 })
-
+  
 app.get("/movies/delete/:id", (req, res) =>{
 
     let newId=req.params.id
@@ -164,6 +169,65 @@ app.get("/movies/update", (req, res) =>{
     
 })
 
+app.get("/movies/add", (req, res) =>{
+    let newTitle=req.query.title
+    let newYear=req.query.year
+    let newRating=parseFloat(req.query.rating) || 4
+    
+
+    if(newTitle==undefined || newYear==undefined){
+        res.json({status:403, error:true, message:"you cannot create a movie without providing a title and a year"})
+    }else if(newYear.length !== 4 || isNaN(newYear)){
+        res.json({status:403, error:true, message:'you cannot create a movie without providing a title and a year'})
+    }else if(rating>10 ||newRating<0){
+        newRating=4
+    }
+    
+        const newMovie={title:newTitle,year:parseInt(newYear, 10), rating:newRating }
+        movies.push(newMovie)
+        res.json(movies)
+
+ 
+
+})
+
+app.post("/movies/update/:id", (req, res) =>{
+
+    let updateId=req.params.id
+    let newTitle=req.body.title
+    let newRate=parseFloat(req.body.rating)
+    let newYear=req.body.year
+    
+    if(updateId  > movies.length || updateId<1){
+        res.json({status:404, error:true, message:`the movie ${updateId} does not exist`
+    })
+    }else{
+        if(newTitle){
+            movies[updateId-1].title= newTitle
+        }if(newRate){
+            movies[updateId -1].rating=newRate
+        }if(newYear){
+            movies[updateId-1].year=newYear
+        }
+        
+    }
+   
+    res.json({movies})
+    
+})  
+
+app.delete("/movies/delete/:id", (req, res) =>{
+
+    let newId=req.params.id
+    
+    if(newId  > movies.length || newId<1){
+        res.json({status:404, error:true, message:`the movie ${newId} does not exist`
+    })
+    }
+    movies.splice(newId-1   , 1)
+    res.json({movies})
+    
+})
 
 
 
