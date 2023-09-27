@@ -334,6 +334,18 @@ app.put('/movies/updates/:id', async (req, res) => {
         res.status(400).json({error :error.message})
     }
  })
+ app.get('/movies/', async (req, res)=>{
+    try{
+        const movies =await Movie.find();
+
+        if (!movies ||movies.length===0){
+            return res.status(404).json({message:'No movies found'});
+        }
+        res.json(movies);
+    }catch (error){
+        res.status(500).json({error:error.message})
+    }
+ })
 
 
   app.listen(3000);
