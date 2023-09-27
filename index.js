@@ -1,6 +1,7 @@
 const express = require('express');
 const app =express()
 const mongoose=require("mongoose")
+const {auth} = require('./authentication');
 
 const bodyParser =require("body-parser");
 // const { default: mongoose } = require('mongoose');
@@ -275,7 +276,7 @@ app.delete("/movies/delete/:id", (req, res) =>{
 })
 
 
-app.post('/movies/addd', async (req, res) => {
+app.post('/movies/addd',auth, async (req, res) => {
     try {
       const { title, year, rating } = req.body;
       const movie = new Movie({ title, year, rating });
@@ -292,7 +293,7 @@ app.post('/movies/addd', async (req, res) => {
 
 
 
-app.put('/movies/updates/:id', async (req, res) => {
+app.put('/movies/updates/:id',auth, async (req, res) => {
     try {
       const { title, year,rating} =req.body;
       const movieId = req.params.id;
@@ -322,7 +323,7 @@ app.put('/movies/updates/:id', async (req, res) => {
     }
   });
 
- app.delete('/movies/deletes/:id',async (req,res)=>{
+ app.delete('/movies/deletes/:id',auth,async (req,res)=>{
     try{
         const movieId =req.params.id;
         const movie=await Movie.findByIdAndRemove(movieId);
@@ -334,7 +335,7 @@ app.put('/movies/updates/:id', async (req, res) => {
         res.status(400).json({error :error.message})
     }
  })
- app.get('/movies/', async (req, res)=>{
+ app.get('/movies/',auth, async (req, res)=>{
     try{
         const movies =await Movie.find();
 
