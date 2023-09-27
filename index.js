@@ -1,6 +1,8 @@
 const express = require('express');
 const app =express()
- const bodyParser =require("body-parser");
+
+const bodyParser =require("body-parser");
+// const { default: mongoose } = require('mongoose');
  app.use(bodyParser.json());
  app.use(bodyParser.urlencoded({extended:true}));
 
@@ -11,6 +13,22 @@ const movies = [
     { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }]
 
     app.use(express.json())
+    const mongoose=require("mongoose")
+    const url="mongodb+srv://aboudecharkawi:wQp6a3J7Ar0YxzNn@moviedb.o9pergp.mongodb.net/?retryWrites=true&w=majority"
+    
+    const client = mongoose.connect(url, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+
+    (async ()=> {
+        try {
+          await client;
+          console.log('Connected to MongoDB');
+        } catch (error) {
+          console.error('Error connecting to MongoDB:', error);
+        }
+      })()
 
 app.get("/", (req, res) =>{
     console.log("here")
@@ -74,7 +92,7 @@ app.post("/movies/add", (req, res) =>{
         movies.push(newMovie)
         res.json(movies)
 
- 
+
 
 })
   
@@ -191,7 +209,7 @@ app.get("/movies/add", (req, res) =>{
 
 })
 
-app.post("/movies/update/:id", (req, res) =>{
+app.put("/movies/update/:id", (req, res) =>{
 
     let updateId=req.params.id
     let newTitle=req.body.title
@@ -234,3 +252,4 @@ app.delete("/movies/delete/:id", (req, res) =>{
 app.listen(3000);
 
 
+//wQp6a3J7Ar0YxzNn
