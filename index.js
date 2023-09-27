@@ -1,5 +1,6 @@
 const express = require('express');
 const app =express()
+const mongoose=require("mongoose")
 
 const bodyParser =require("body-parser");
 // const { default: mongoose } = require('mongoose');
@@ -12,8 +13,34 @@ const movies = [
     { title: 'Brazil', year: 1985, rating: 8 },
     { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }]
 
+
+    //schema and module
+    const movieSchema = new mongoose.Schema({
+        title: {
+          type: String,
+          required: true,
+        },
+        year: {
+          type: Number,
+          required: true,
+          min:1780,
+          max:new Date().getFullYear(),
+
+        },
+        rating:{
+            type:Number,
+            required:true,
+            default:4,
+            min:0,
+            max:10
+        }
+      });
+      
+      // Create a User model using the schema
+      const Movie = mongoose.model('Movie', movieSchema);
+
     app.use(express.json())
-    const mongoose=require("mongoose")
+    
     const url="mongodb+srv://aboudecharkawi:wQp6a3J7Ar0YxzNn@moviedb.o9pergp.mongodb.net/?retryWrites=true&w=majority"
     
     const client = mongoose.connect(url, {
@@ -248,8 +275,65 @@ app.delete("/movies/delete/:id", (req, res) =>{
 })
 
 
+app.post('/movies/addd', async (req, res) => {
+    try {
+      const { title, year, rating } = req.body;
+      const movie = new Movie({ title, year, rating });
+      const savedMovie = await movie.save();
+      res.json(savedMovie);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+  
 
-app.listen(3000);
 
 
-//wQp6a3J7Ar0YxzNn
+
+
+
+app.put('/movies/updates/:id', async (req, res) => {
+    try {
+      const { title, year,rating} =req.body;
+      const movieId = req.params.id;
+  
+      const movie = await Movie.findById(movieId);
+  
+      if (!movie) {
+        return res.status(404).json({ message: `Movie with ID ${movieId} not found` });
+      }
+  
+      // Update movie properties
+      if (title) {
+        movie.title = title;
+      }
+      if (year) {
+        movie.year = year;
+      }
+      if (rating) {
+        movie.rating = rating;
+      }
+  
+      // Save the updated movie
+      const updatedMovie = await movie.save();
+      res.json(updatedMovie);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+ app.delete('/movies/deletes/:id',async (req,res)=>{
+    try{
+        const movieId =req.params.id;
+        const movie=await Movie.findByIdAndRemove(movieId);
+        if(!movie){
+            return res.status(404).json({message:`Movie with ID ${movieId}doesn't exist`})
+        }
+        res.json({message: `Movie with id ${movieId} has been deleted succesfully`})
+    }catch (error){
+        res.status(400).json({error :error.message})
+    }
+ })
+
+
+  app.listen(3000);
